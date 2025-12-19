@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Safe Dropship Automation Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+  <div id="root"></div>
+  
+  <script type="module">
+    // React via CDN
+    import React from 'https://esm.sh/react@18.2.0';
+    import ReactDOM from 'https://esm.sh/react-dom@18.2.0/client';
+    
+    const { useState, useEffect } = React;
+
+    function Dashboard() {
+      const [activeTab, setActiveTab] = useState('dashboard');
+      const [trends] = useState([
+        { name: 'Fashion Muslim', growth: 145, volume: 125000, competition: 'medium' },
+        { name: 'Gadget Accessories', growth: 132, volume: 98000, competition: 'high' },
+        { name: 'Skincare Korea', growth: 128, volume: 156000, competition: 'high' }
+      ]);
+      
+      const [analytics] = useState({
+        totalProducts: 38,
+        totalRevenue: 4350000,
+        totalProfit: 1341000,
+        todayPosted: 12,
+        weeklyGrowth: 18.5
+      });
+
+      const Icon = ({ name, size = 24 }) => {
+        const icons = {
+          shield: '🛡️',
+          refresh: '🔄',
+          chart: '📊',
+          fire: '🔥',
+          box: '📦',
+          rocket: '🚀',
+          target: '🎯',
+          check: '✅',
+          settings: '⚙️',
+          dollar: '💰',
+          trend: '📈',
+          package: '📦'
+        };
+        return React.createElement('span', { className: 'text-xl' }, icons[name] || '•');
+      };
+
+      return React.createElement('div', { className: 'max-w-7xl mx-auto p-4' },
+        // Header
+        React.createElement('div', { className: 'bg-white rounded-xl shadow-lg p-6 mb-6' },
+          React.createElement('div', { className: 'flex items-center justify-between mb-4' },
+            React.createElement('div', null,
+              React.createElement('h1', { className: 'text-3xl font-bold text-gray-800 flex items-center gap-2' },
+                React.createElement(Icon, { name: 'shield' }),
+                'Safe Dropship Automation'
+              ),
+              React.createElement('p', { className: 'text-gray-600 mt-2' }, 
+                'Full automation dengan keamanan marketplace terjamin'
+              )
+            ),
+            React.createElement('button', { 
+              className: 'bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition'
+            }, '🔄 Refresh')
+          ),
+          
+          // Tabs
+          React.createElement('div', { className: 'flex gap-2 overflow-x-auto pb-2' },
+            ['dashboard', 'trends', 'analytics', 'queue'].map(tab =>
+              React.createElement('button', {
+                key: tab,
+                onClick: () => setActiveTab(tab),
+                className: `px-4 py-2 rounded-lg font-medium transition whitespace-nowrap ${
+                  activeTab === tab ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`
+              }, 
+                tab === 'dashboard' ? '📊 Dashboard' :
+                tab === 'trends' ? '🔥 Trends' :
+                tab === 'analytics' ? '📈 Analytics' : '✅ Queue'
+              )
+            )
+          )
+        ),
+
+        // Content
+        activeTab === 'dashboard' && React.createElement('div', { className: 'space-y-6' },
+          // Stats
+          React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-4 gap-4' },
+            [
+              { label: 'Total Products', value: analytics.totalProducts, icon: 'package', color: 'blue' },
+              { label: 'Total Revenue', value: `Rp ${(analytics.totalRevenue/1000).toFixed(0)}k`, icon: 'dollar', color: 'green' },
+              { label: 'Total Profit', value: `Rp ${(analytics.totalProfit/1000).toFixed(0)}k`, icon: 'trend', color: 'purple' },
+              { label: 'Posted Today', value: `${analytics.todayPosted}/15`, icon: 'shield', color: 'orange' }
+            ].map((stat, i) =>
+              React.createElement('div', { key: i, className: 'bg-white rounded-lg shadow p-4' },
+                React.createElement('p', { className: 'text-gray-600 text-sm' }, stat.label),
+                React.createElement('p', { className: `text-2xl font-bold text-${stat.color}-600 mt-2` }, stat.value)
+              )
+            )
+          ),
+
+          // Safety Banner
+          React.createElement('div', { className: 'bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-6' },
+            React.createElement('h3', { className: 'text-xl font-bold text-green-800 mb-2' }, 
+              '🛡️ Safety Mode: ACTIVE'
+            ),
+            React.createElement('p', { className: 'text-green-700 text-sm' }, 
+              'Sistem berjalan dengan proteksi penuh terhadap ToS marketplace'
+            ),
+            React.createElement('div', { className: 'grid md:grid-cols-3 gap-4 mt-4' },
+              [
+                { label: 'Daily Limit', value: '15 produk/hari' },
+                { label: 'Random Delays', value: '3-8 detik' },
+                { label: 'Working Hours', value: '8:00-22:00' }
+              ].map((item, i) =>
+                React.createElement('div', { key: i, className: 'bg-white rounded-lg p-3 border border-green-200' },
+                  React.createElement('p', { className: 'text-sm text-gray-600' }, item.label),
+                  React.createElement('p', { className: 'text-lg font-bold text-green-600' }, item.value)
+                )
+              )
+            )
+          )
+        ),
+
+        activeTab === 'trends' && React.createElement('div', { className: 'bg-white rounded-xl shadow-lg overflow-hidden' },
+          React.createElement('div', { className: 'p-6 border-b bg-gradient-to-r from-blue-600 to-indigo-600' },
+            React.createElement('h2', { className: 'text-xl font-bold text-white' }, '🔥 Trending Categories')
+          ),
+          React.createElement('div', { className: 'overflow-x-auto' },
+            React.createElement('table', { className: 'w-full' },
+              React.createElement('thead', { className: 'bg-gray-50' },
+                React.createElement('tr', null,
+                  ['Rank', 'Category', 'Growth', 'Volume', 'Competition'].map(h =>
+                    React.createElement('th', { 
+                      key: h, 
+                      className: 'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase' 
+                    }, h)
+                  )
+                )
+              ),
+              React.createElement('tbody', { className: 'divide-y divide-gray-200' },
+                trends.map((trend, i) =>
+                  React.createElement('tr', { key: i, className: 'hover:bg-gray-50' },
+                    React.createElement('td', { className: 'px-6 py-4' },
+                      React.createElement('span', { className: 'font-bold text-yellow-600' }, `#${i+1}`)
+                    ),
+                    React.createElement('td', { className: 'px-6 py-4' }, trend.name),
+                    React.createElement('td', { className: 'px-6 py-4 text-green-600 font-semibold' }, `${trend.growth}%`),
+                    React.createElement('td', { className: 'px-6 py-4' }, trend.volume.toLocaleString()),
+                    React.createElement('td', { className: 'px-6 py-4' },
+                      React.createElement('span', { 
+                        className: `px-3 py-1 rounded-full text-xs ${
+                          trend.competition === 'low' ? 'bg-green-100 text-green-700' :
+                          trend.competition === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                          'bg-red-100 text-red-700'
+                        }`
+                      }, trend.competition)
+                    )
+                  )
+                )
+              )
+            )
+          )
+        ),
+
+        activeTab === 'analytics' && React.createElement('div', { className: 'bg-white rounded-xl shadow-lg p-6' },
+          React.createElement('h2', { className: 'text-2xl font-bold mb-6' }, '📈 Sales Analytics'),
+          React.createElement('div', { className: 'grid md:grid-cols-2 gap-6' },
+            React.createElement('div', { className: 'border rounded-lg p-4' },
+              React.createElement('h3', { className: 'font-semibold mb-3' }, 'Performance Overview'),
+              React.createElement('div', { className: 'space-y-2' },
+                [
+                  { label: 'Conversion Rate', value: '2.8%' },
+                  { label: 'Avg Order Value', value: 'Rp 121.389' },
+                  { label: 'Total Orders', value: '38' }
+                ].map((item, i) =>
+                  React.createElement('div', { key: i, className: 'flex justify-between' },
+                    React.createElement('span', { className: 'text-gray-600' }, item.label),
+                    React.createElement('span', { className: 'font-bold text-blue-600' }, item.value)
+                  )
+                )
+              )
+            )
+          )
+        ),
+
+        activeTab === 'queue' && React.createElement('div', { className: 'bg-white rounded-xl shadow-lg p-6' },
+          React.createElement('div', { className: 'flex justify-between items-center mb-6' },
+            React.createElement('h2', { className: 'text-2xl font-bold' }, '✅ Product Queue'),
+            React.createElement('button', { 
+              className: 'bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition',
+              onClick: () => {
+                const data = { products: [], exportedAt: new Date().toISOString() };
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `dropship-export-${Date.now()}.json`;
+                a.click();
+                alert('✅ File exported! (Demo - no products yet)');
+              }
+            }, '📥 Export for Extension')
+          ),
+          React.createElement('div', { className: 'text-center py-12 text-gray-500' },
+            React.createElement('div', { className: 'text-6xl mb-4' }, '📦'),
+            React.createElement('p', { className: 'text-lg' }, 'Queue kosong - Tambahkan produk dari tab Trends')
+          )
+        )
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(React.createElement(Dashboard));
+  </script>
+</body>
+</html>
