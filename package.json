@@ -1,0 +1,12 @@
+{
+  "name": "dropship-scraper",
+  "version": "1.0.0",
+  "description": "Auto scrape marketplace data",
+  "main": "scraper.js",
+  "scripts": {
+    "scrape": "node scraper.js"
+  },
+  "dependencies": {
+    "puppeteer": "^21.0.0"
+  }
+}
