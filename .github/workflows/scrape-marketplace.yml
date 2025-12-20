@@ -1,68 +1,63 @@
-# .github/workflows/scrape-marketplace.yml
-# Auto-scrape marketplace data setiap hari
-
 name: Auto Scrape Marketplace
 
 on:
-  # Run setiap hari jam 6 pagi (UTC+7 = 23:00 UTC previous day)
   schedule:
-    - cron: '0 23 * * *'  # 6 AM WIB
-  
-  # Atau manual trigger
+    - cron: '0 23 * * *'
   workflow_dispatch:
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
     
+    permissions:
+      contents: write
+    
     steps:
-      # 1. Checkout repository
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
-      # 2. Setup Node.js
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
       
-      # 3. Install dependencies
+      - name: Install Chromium dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
+      
       - name: Install dependencies
         run: |
           npm install puppeteer
-          npm install puppeteer-extra
-          npm install puppeteer-extra-plugin-stealth
       
-      # 4. Run scraper
       - name: Run marketplace scraper
         run: |
           node scraper.js
         continue-on-error: true
       
-      # 5. Check if data file exists
       - name: Check marketplace data
         run: |
           if [ -f "marketplace-data.json" ]; then
             echo "✅ Scraping successful"
             ls -lh marketplace-data.json
+            cat marketplace-data.json | head -20
           else
             echo "⚠️ No data file generated"
           fi
       
-      # 6. Commit & push hasil
       - name: Commit and push data
         run: |
           git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add marketplace-data.json
+          git config --local user.name "GitHub Action Bot"
+          git add -A
           git diff --quiet && git diff --staged --quiet || git commit -m "🤖 Auto-update marketplace data $(date +'%Y-%m-%d %H:%M')"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-      # 7. Create artifact (backup)
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
+      - name: Upload artifact (backup)
+        uses: actions/upload-artifact@v4
+        if: success()
         with:
           name: marketplace-data
           path: marketplace-data.json
